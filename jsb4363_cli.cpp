@@ -19,13 +19,17 @@ class Robot_part {
 		string get_name();
 		int get_model_number();
 		double get_cost();
-		string get_description();		
+		string get_description();
+		string robot_part_to_string();		
 		Robot_part(string _name, int _model_number, double _cost, string _description) : 
 		name(_name), model_number(_model_number), cost (_cost),
 		description(_description) {}
 	friend ostream& operator<<(ostream& os, const Robot_part& robot_part);
 
 };
+string Robot_part::robot_part_to_string() {
+  string med= "\"" + name + "\"" + " with " ". Directed by " + description + ". " + std::to_string(cost) +  ". ID: " + std::to_string(model_number);
+return med; }
 string Robot_part::get_name(){return name;}
 int Robot_part::get_model_number(){return model_number;}
 double Robot_part::get_cost(){return cost;}
@@ -138,7 +142,62 @@ class Robot_model {
 		double max_battery();
 
 };
+// /////////////////////////////////////
+//           C U S T O M E R
+// /////////////////////////////////////
+	
+class Customer {
 
+	private:
+		string name;
+		int customer_number;
+		string phone_number;
+		string email_address;
+	public:
+		Customer(string _name, int _number, string _phone, string _email) : name(_name), 			customer_number(_number), phone_number(_phone), email_address(_email) {} 
+		string get_name(){return name;}
+		int get_customer_number(){return customer_number;}
+		string get_phone_number(){return phone_number;}
+		string get_email_address(){return email_address;}
+		string to_string() {string output = name +" "+std::to_string(customer_number) + " (" + phone_number + ") " + email_address;  return output;}
+
+};
+// /////////////////////////////////////
+//      S A L E S A S S O C I A T E     
+// /////////////////////////////////////
+	
+class Sales_Associate {
+
+	private:
+		string name;
+		int employee_number;
+	public:
+		Sales_Associate(string _name, int _number) : name(_name), employee_number(_number) {}
+		string get_name(){return name;}
+		int get_employee_number(){return employee_number;}
+		string to_string(){return name + " " + std::to_string(employee_number);}
+
+};
+	
+// /////////////////////////////////////
+//              O R D E R
+// /////////////////////////////////////
+
+class Order {
+
+	private:
+		int order_number = 0;
+		string date = "";
+		Customer customer;
+		Sales_Associate sales_associate;
+		Robot_model robot_model;
+		int status;
+	public:
+		double robot_cost();
+		double extended_price();
+
+}; 
+//Order order;
 // /////////////////////////////////////
 //              S H O P
 // /////////////////////////////////////
@@ -146,19 +205,48 @@ class Robot_model {
 class Shop {
 
 	private:
+		vector<Sales_Associate> sales_a;
+		vector<Customer> customer;
 		vector<Robot_part*> parts_list;
 		vector<Robot_model> models_list;
 	public:
-
+	string sales_associate_to_string(int sale_index) {return sales_a[sale_index].to_string();}
+	string customer_to_string(int cust_index) {return customer[cust_index].to_string();}
+	void create_new_customer() 
+	{
+	string name, phone, email;
+	int number;
+	cout << "Name? \n";
+	getline(cin, name);
+	cout << "Customer number? \n";
+	cin >> number;
+	cin.ignore();
+	cout << "Phone Number? \n";
+	getline(cin, phone);
+	cout << "Email Address? \n";
+	getline(cin, email);
+	Customer cus(name, number, phone, email);
+	customer.push_back(cus);
+	}
+	void create_new_sales_associate() 
+	{
+	string name;
+	int number;
+	cout << "Name? \n";
+	getline(cin, name);
+	cout << "Employee Number? \n";
+	cin >> number;
+	Sales_Associate s_a(name, number);
+	sales_a.push_back(s_a);
+	}
+	int number_of_sales_associates(){return sales_a.size();}
+    	int number_of_customers(){return customer.size();}
 	void create_new_robot_parts(int choice){
 	string _name, _description;	
 	int _max_arms, _battery_compartments, _model_number;
 	double _cost, _power, _max_power, _power_available, _max_energy, _max_speed;
+	cout << endl;
 
-	cout << endl;	
-
-	if(choice == 1)
-	{
 	cout << "Name? \n";
     	getline(cin, _name);
 	cin.ignore(); // consume \n
@@ -173,57 +261,27 @@ class Shop {
 
    	cout << "Description? \n";
     	getline(cin, _description);
-	cin.ignore(); // consume \n
-	
+		
+
+	if(choice == 1)
+	{
 	cout << "power? \n";
     	cin >> _power;
     	cin.ignore();    
 	
-	Robot_part* head = new Head(_name,_model_number,_cost,_description,_power);
-	parts_list.push_back(head);	
+	//Robot_part* head = new Head(_name,_model_number,_cost,_description,_power);
+	//parts_list.push_back(head);	
 	}
 	if(choice == 2)
 	{
-	cout << "Name? \n";
-    	getline(cin, _name);
-	cin.ignore(); // consume \n
-		
-	cout << "Model Number? \n";
-    	cin >> _model_number;
-    	cin.ignore();
-
-	cout << "Cost? \n";
-    	cin >> _cost;
-    	cin.ignore();
-
-   	cout << "Description? \n";
-    	getline(cin, _description);
-	cin.ignore(); // consume \n
-	
 	cout << "Max Power? \n";
     	cin >> _max_power;
     	cin.ignore();    
 	
-	Robot_part* arm = new Arm(_name,_model_number,_cost,_description,_max_power);
+	//Robot_part* arm = new Arm(_name,_model_number,_cost,_description,_max_power);
 	}
 	if(choice == 3)
 	{
-	cout << "Name? \n";
-    	getline(cin, _name);
-	cin.ignore(); // consume \n
-		
-	cout << "Model Number? \n";
-    	cin >> _model_number;
-    	cin.ignore();
-
-	cout << "Cost? \n";
-    	cin >> _cost;
-    	cin.ignore();
-
-   	cout << "Description? \n";
-    	getline(cin, _description);
-	cin.ignore(); // consume \n
-	
 	cout << "Battery Compartments? \n";
     	cin >> _battery_compartments;
     	cin.ignore();    
@@ -232,26 +290,10 @@ class Shop {
     	cin >> _max_arms;
     	cin.ignore();    
 
-	Robot_part* torso = new Torso(_name,_model_number,_cost,_description,_battery_compartments,_max_arms);
+	//Robot_part* torso = new Torso(_name,_model_number,_cost,_description,_battery_compartments,_max_arms);
 	}	
 	if(choice == 4)
 	{
-	cout << "Name? \n";
-    	getline(cin, _name);
-	cin.ignore(); // consume \n
-		
-	cout << "Model Number? \n";
-    	cin >> _model_number;
-    	cin.ignore();
-
-	cout << "Cost? \n";
-    	cin >> _cost;
-    	cin.ignore();
-
-   	cout << "Description? \n";
-    	getline(cin, _description);
-	cin.ignore(); // consume \n
-	
 	cout << "Battery Compartments? \n";
     	cin >> _power_available;
     	cin.ignore();    
@@ -260,26 +302,10 @@ class Shop {
     	cin >> _max_energy;
     	cin.ignore();    
 
-	Robot_part* battery = new Battery(_name,_model_number,_cost,_description,_power_available,_max_energy);	
+	//Robot_part* battery = new Battery(_name,_model_number,_cost,_description,_power_available,_max_energy);	
 	}
 	if(choice == 5)
 	{
-	cout << "Name? \n";
-    	getline(cin, _name);
-	cin.ignore(); // consume \n
-		
-	cout << "Model Number? \n";
-    	cin >> _model_number;
-    	cin.ignore();
-
-	cout << "Cost? \n";
-    	cin >> _cost;
-    	cin.ignore();
-
-   	cout << "Description? \n";
-    	getline(cin, _description);
-	cin.ignore(); // consume \n
-
 	cout << "Max Power? \n";
     	cin >> _max_power;
     	cin.ignore();    
@@ -288,12 +314,12 @@ class Shop {
     	cin >> _max_speed;
     	cin.ignore();
 
-	Robot_part* locomotor = new Locomotor(_name,_model_number,_cost,_description,_max_power,_max_speed);
+	//Robot_part* locomotor = new Locomotor(_name,_model_number,_cost,_description,_max_power,_max_speed);
 	}
-}
-void create_new_robot_models(){
 
 }
+void create_new_robot_models(){}
+int number_of_Robot_parts(){return parts_list.size();}
 };
 Shop shop;
 
@@ -304,9 +330,7 @@ Shop shop;
 class View {
 	
 	private:
-		Shop& shop;
 	public: 
-		View(Shop s) : shop(s)  {}
 		string get_menu();
 		string get_orders_list(); 
 		string get_robot_parts_list();
@@ -323,20 +347,23 @@ string menu = R"(
 
 Robots
 ------------
-(1) View all orders
-(2) Add Robot Parts
-(3) View all robot parts
-(4) Add a Robot Model
-(5) View all robot models
+(1) Add an Order
+(2) View all Orders
+(3) Add Robot Parts
+(4) View all Robot Parts
+(5) Add a Robot Model
+(6) View all Robot Models
 
 People
 -------
-(6) View all customers
-(7) View all associates
+(7) Add Customer
+(8) View all Customers
+(9) Add Sales Associate
+(10) View all Associates
 
 Utility
 -------
-(9) Help
+(99) Help
 (0) Exit 
 )";
 	return menu;
@@ -355,6 +382,9 @@ string View::get_robot_parts_list(){
    List of Robot Parts
 -------------------------
 )";
+/*for (int i=0; i<shop.number_of_Robot_parts(); ++i) {
+    list += std::to_string(i) + ") " + robot_part.robot_part_to_string(i) + '\n';
+  }*/
 	return list;
 } 
 string View::get_robot_models_list(){
@@ -370,7 +400,10 @@ string View::get_customers_list(){
 -------------------------
     List of Customers
 -------------------------
-)";
+)";	
+	
+	for (int i=0; i<shop.number_of_customers(); ++i) {
+    	list += std::to_string(i) + ") " + shop.customer_to_string(i) + '\n';}
 	return list;
 } 
 string View::get_sales_associates_list(){
@@ -379,6 +412,9 @@ string View::get_sales_associates_list(){
 List of Sales Associates
 -------------------------
 )";
+	for (int i=0; i<shop.number_of_sales_associates(); ++i) {
+    	list += std::to_string(i) + ") " + shop.sales_associate_to_string(i) + '\n';
+  	}
 	return list;
 } 
 string View::get_help(){
@@ -386,13 +422,16 @@ string View::get_help(){
 -------------------------
      	  Help
 -------------------------
-Pressing (1) Brings up all the Orders
-Pressing (2) Adds Robot Parts
-Pressing (3) Brings up all the Robot Parts
-Pressing (4) Adds a Robot Model
-Pressing (5) Brings up all the Robot Models
-Pressing (6) Brings up all the Customers
-Pressing (7) Brings up all the Sales Associates
+Pressing (1) Add an Order
+Pressing (2) Brings up all the Orders
+Pressing (3) Adds Robot Parts
+Pressing (4) Brings up all the Robot Parts
+Pressing (5) Adds a Robot Model
+Pressing (6) Brings up all the Robot Models
+Pressing (7) Add a Customer
+Pressing (8) Brings up all the Customers
+Pressing (9) Add a Sales Associate
+Pressing (10) Brings up all the Sales Associates
 )";
 	return list;
 } 
@@ -436,9 +475,11 @@ int Controller::get_int(string prompt, int max_int) {
 }
 
 void Controller::execute_cmd(int cmd) {
-  if (cmd == 1) { 
+  if (cmd == 1) {
+	
+ } else if (cmd == 2) { 
 	cout << view.get_orders_list() << endl;
- } else if (cmd == 2) {	
+ } else if (cmd == 3) {	
 		int choice;
 		string list = R"(
 ---------------------------------
@@ -455,21 +496,25 @@ What type would you like to make
 	cin >> choice;
 	shop.create_new_robot_parts(choice);	
 }
-   else if(cmd == 3){
+   else if(cmd == 4){
 	cout << view.get_robot_parts_list();
- } else if(cmd == 4){
+ } else if(cmd == 5){
 	cout << view.get_robot_parts_list();
- } else if (cmd == 5) {
-	cout << view.get_robot_models_list();
  } else if (cmd == 6) {
-	cout << view.get_customers_list();
+	cout << view.get_robot_models_list();
  } else if (cmd == 7) {
+	shop.create_new_customer();
+ } else if (cmd == 8) {
+	cout << view.get_customers_list();
+ } else if (cmd == 9){
+	shop.create_new_sales_associate();
+ } else if (cmd == 10) {
 	cout << view.get_sales_associates_list();
- } else if (cmd == 8) { // Help
+ } else if (cmd == 99) { // Help
     cout << view.get_help();
  } else if (cmd == 0) { // Exit
  } else {
-   cerr << "**** Invalid command - type 9 for help" << endl << endl;
+   cerr << "**** Invalid command - type 99 for help" << endl << endl;
  }
 }
 // /////////////////////////////////////
@@ -477,7 +522,7 @@ What type would you like to make
 // /////////////////////////////////////
 
 int main() {
-	View view(shop);
+	View view;
 	Controller controller(view, shop);
 	controller.cli();
 }
